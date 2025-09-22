@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Котики ищут новый дом 🏠</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 28px;
+      }
+
+      #cats-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .cat-card {
+        border-radius: 15px;
+        overflow: hidden;
+        width: 220px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .cat-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+      }
+
+      .cat-card h3 {
+        margin: 10px 0 5px;
+        color: #333;
+        font-size: 18px;
+      }
+
+      .cat-card p {
+        margin: 5px 10px;
+        font-size: 13px;
+        color: #555;
+        line-height: 1.4;
+      }
+
+      .favourite {
+        display: inline-block;
+        transition: transform 0.3s;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Котики ищут новый дом 🏠</h1>
+    <div id="cats-container"></div>
+
+    <script type="module">
+      import { cats } from "./cats.js";
+
+      const container = document.getElementById("cats-container");
+
+      cats.forEach((cat, index) => {
+        const card = document.createElement("div");
+        card.className = "cat-card";
+
+        card.style.background = "linear-gradient(to bottom, #ffffff, #fefefe)";
+        card.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.1)";
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        card.style.animation = `fadeIn 0.5s forwards ${index * 0.1}s`; 
+
+        const favouriteIcon = cat.favourite ? "❤️" : "🤍";
+
+        card.innerHTML = `
+            <img src="${cat.img_link}" alt="${cat.name}">
+            <h3>${cat.name} <span class="favourite">${favouriteIcon}</span></h3>
+            <p>Возраст: ${cat.age} лет</p>
+            <p>Рейтинг: ${cat.rate}/10</p>
+            <p>${cat.description}</p>
+        `;
+
+        card.addEventListener("mouseover", () => {
+          card.style.transform = "translateY(-8px)";
+          card.style.boxShadow = "0 15px 30px rgba(0, 0, 0, 0.2)";
+        });
+
+        card.addEventListener("mouseout", () => {
+          card.style.transform = "translateY(0)";
+          card.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.1)";
+        });
+
+        container.appendChild(card);
+      });
+
+      const style = document.createElement("style");
+      style.innerHTML = `
+        @keyframes fadeIn {
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>
