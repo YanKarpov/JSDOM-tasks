@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1 KT</title>
+  <style>
+    .wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    table {
+      width: 70vw;
+      height: 90vh;
+      border-collapse: collapse;
+      font-size: 2rem;
+      text-align: center;
+      border: 2px solid #333;
+    }
+
+    td {
+      border: 2px solid #333;
+      padding: 0.5em;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button {
+      font-size: 1.2rem;
+      height: 10rem;
+      align-self: start;
+      cursor: pointer;
+    }
+
+    .orange { background-color: orange; }
+    .duplicate { background-color: lightblue; }
+    .orange.duplicate { background-color: purple; color: white; }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <table id="numTable"></table>
+    <button id="addBtn">Добавить число</button>
+  </div>
+
+  <script>
+    const numbers = Array.from({ length: 30 }, () => Math.floor(Math.random() * 100));
+    const table = document.getElementById("numTable");
+    const addBtn = document.getElementById("addBtn");
+
+    // Создание таблицы
+    function createTable() {
+      const fragment = document.createDocumentFragment();
+      let index = 0;
+
+      for (let row = 0; row < Math.ceil(numbers.length / 6); row++) {
+        const tr = document.createElement("tr");
+        for (let col = 0; col < 6 && index < numbers.length; col++) {
+          tr.append(createCell(numbers[index++]));
+        }
+        fragment.append(tr);
+      }
+      table.append(fragment);
+    }
+
+    // Создание ячейки
+    function createCell(num) {
+      const td = document.createElement("td");
+      td.textContent = num;
+      if (num >= 50) td.classList.add("orange");
+      return td;
+    }
+
+    // Подсветка дубликатов
+    function highlightDuplicates() {
+      const counts = numbers.reduce((acc, n) => {
+        acc[n] = (acc[n] || 0) + 1;
+        return acc;
+      }, {});
+
+      table.querySelectorAll("td").forEach(td => {
+        const value = Number(td.textContent);
+        td.classList.toggle("duplicate", counts[value] > 1);
+        td.classList.toggle("orange", value >= 50);
+      });
+    }
+
+    // Добавление нового числа
+    function addNumber() {
+      const num = Math.floor(Math.random() * 100);
+      numbers.push(num);
+
+      let lastRow = table.lastElementChild;
+      if (!lastRow || lastRow.children.length >= 6) {
+        lastRow = document.createElement("tr");
+        table.append(lastRow);
+      }
+      lastRow.append(createCell(num));
+      highlightDuplicates();
+    }
+
+    addBtn.addEventListener("click", addNumber);
+
+    createTable();
+    highlightDuplicates();
+  </script>
+</body>
+</html>
